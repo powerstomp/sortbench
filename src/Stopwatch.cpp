@@ -12,7 +12,6 @@ Stopwatch::Stopwatch() {
 	this->Start();
 }
 void Stopwatch::Start() {
-	ch::high_resolution_clock clock;
 	this->startTime = GetCurrentTime();
 }
 long long Stopwatch::Get() {
