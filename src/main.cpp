@@ -1,4 +1,5 @@
 #include "Types.h"
+#include "BubbleSort.h"
 
 #include <fstream>
 #include <iostream>
@@ -29,6 +30,5 @@ bool WriteFile(const char *name, int *values, int n) {
 }
 
 int main(int argc, char **argv) {
-	std::cout << "Hello computer.";
 	return 0;
 }
