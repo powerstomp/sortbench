@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 
+#define EXIT(id, msg) { std::cout << msg; return (id); }
+
 int* LoadFile(const char *name, int &n) {
 	std::ifstream file(name);
 	if (!file.good())
@@ -30,21 +32,17 @@ bool WriteFile(const char *name, int *values, int n) {
 }
 
 /*
-	1: (general) not enough arguments
-	2: Invalid mode
-	3: Invalid algorithm
-	4: I/O error
-	5: Invalid input generation order
-	6: No output
+	1: Argument not found
+	2: Invalid argument
 */
 int main(int argc, char **argv) {
 	if (argc < 4)
-		return 1;
+		EXIT(1, "Not enough arguments.");
 
 	if (strcmp(argv[1], "-a") == 0) {
 		int algo = ParseOption(argv[2], SORTS, SORT_COUNT);
 		if (algo == -1)
-			return 3;
+			EXIT(2, "Invalid algorithm.");
 
 		int tmp, outputFlags = 0;
 		while ((tmp = ParseOption(argv[argc - 1],
@@ -53,7 +51,7 @@ int main(int argc, char **argv) {
 			argc--;
 		}
 		if (outputFlags == 0)
-			return 6;
+			EXIT(1, "No outputs provided.");
 
 		int n, order = -1;
 		int *values = LoadFile(argv[3], n);
@@ -63,7 +61,7 @@ int main(int argc, char **argv) {
 			if (argc > 4) {
 				order = ParseOption(argv[4], INPUT_ORDERS, INPUT_ORDER_COUNT);
 				if (order == -1)
-					return 5;
+					EXIT(2, "Invalid input order.");
 			}
 		}
 
@@ -74,23 +72,23 @@ int main(int argc, char **argv) {
 		std::cout << "Input size:\t" << n << '\n';
 	} else if (strcmp(argv[1], "-c") == 0) {
 		if (argc < 5)
-			return 1;
+			EXIT(1, "Not enough arguments.");
 
 		int algo = ParseOption(argv[2], SORTS, SORT_COUNT),
 			algo2 = ParseOption(argv[3], SORTS, SORT_COUNT);
 		if (algo == -1 || algo2 == -1)
-			return 3;
+			EXIT(2, "Invalid algorithm.");
 
 		int n, order;
 		int *values;
 		if (argc == 5) {
 			if (!(values = LoadFile(argv[4], n)))
-				return 4;
+				EXIT(2, "File not found.");
 		} else {
 			n = atoi(argv[4]);
 			order = ParseOption(argv[5], INPUT_ORDERS, INPUT_ORDER_COUNT);
 			if (order == -1)
-				return 5;
+				EXIT(2, "Invalid input order.");
 		}
 
 		std::cout << "COMPARE MODE\n";
@@ -101,7 +99,7 @@ int main(int argc, char **argv) {
 		if (!values)
 			std::cout << "Input order:\t" << INPUT_ORDER_NAMES[order] << '\n';
 	} else
-		return 2;
+		EXIT(2, "Invalid mode.");
 
 	return 0;
 }

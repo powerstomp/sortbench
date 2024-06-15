@@ -1,5 +1,6 @@
 ifeq ($(OS), Windows_NT)
 	TARGET = main.exe
+	RM = del /q
 else
 	TARGET = main
 endif
@@ -11,7 +12,10 @@ SOURCES = $(wildcard src/*.cpp)
 
 OBJECTS = $(patsubst src/%.cpp,obj/%.o,$(SOURCES))
 
+all: CXXFLAGS += -DNDEBUG
 all: $(TARGET)
+
+debug: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
@@ -21,3 +25,7 @@ obj/%.o: src/%.cpp | obj
 
 obj:
 	mkdir obj
+
+clean:
+	-$(RM) obj
+	-$(RM) $(TARGET)
