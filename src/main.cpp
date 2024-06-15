@@ -6,7 +6,6 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
-#include <memory>
 
 #define EXIT(id, msg) { std::cout << msg; return (id); }
 
@@ -46,19 +45,15 @@ bool WriteFile(const char *name, int *values, int n) {
 long long GetSortTime(int algorithm, int *values, int n) {
 	static Stopwatch stopwatch;
 
-	int *tmp = new int[n];
-	std::memcpy(tmp, values, n * sizeof(tmp[0]));
-
 	#define BENCH(command) { \
 		stopwatch.Start(); \
 		{ command; } \
-		assert(IsSorted(tmp, n)); \
-		delete []tmp; \
+		assert(IsSorted(values, n)); \
 		return stopwatch.Get(); \
 	}
 
 	if (algorithm == SortType::Bubble)
-		BENCH(Sort::Bubble::Apply(tmp, n));
+		BENCH(Sort::Bubble::Apply(values, n));
 
 	#undef BENCH
 
@@ -66,29 +61,52 @@ long long GetSortTime(int algorithm, int *values, int n) {
 }
 
 int GetSortComparisons(int algorithm, int *values, int n) {
-	int *tmp = new int[n];
-	std::memcpy(tmp, values, n * sizeof(tmp[0]));
-
 	#define BENCH(command) { \
 		int result = command; \
-		assert(IsSorted(tmp, n)); \
-		delete []tmp; \
+		assert(IsSorted(values, n)); \
 		return result; \
 	}
 
 	if (algorithm == SortType::Bubble)
-		BENCH(Sort::Bubble::CountComparisons(tmp, n));
+		BENCH(Sort::Bubble::CountComparisons(values, n));
 
 	return -1;
 }
 
 void RunBenchmark(int algorithm, int *values, int n, int flags) {
+	int *tmp = new int[n];
+	std::memcpy(tmp, values, n * sizeof(tmp[0]));
+
 	std::cout << "--------------------------------\n";
 	if (flags & OutputType::Time)
-		std::cout << "Running time:\t" << GetSortTime(algorithm, values, n) / 1e6 << '\n';
-	if (flags & OutputType::Comparisons)
-		std::cout << "Comparisons:\t" << GetSortComparisons(algorithm, values, n);
+		std::cout << "Running time:\t" << GetSortTime(algorithm, values, n) / 1e6 << "ms" << '\n';
+	if (flags & OutputType::Comparisons) {
+		std::memcpy(values, tmp, n * sizeof(values[0]));
+		std::cout << "Comparisons:\t" << GetSortComparisons(algorithm, values, n) << '\n';
+	}
 	std::cout << '\n';
+
+	delete []tmp;
+}
+
+void RunComparison(int algorithm, int algorithm2,
+							int *values, int n) {
+	int *tmp = new int[n];
+	std::memcpy(tmp, values, n * sizeof(tmp[0]));
+
+	std::cout << "--------------------------------\n";
+	std::cout << "Running time:\t" << GetSortTime(algorithm, values, n) / 1e6 << "ms";
+	std::memcpy(values, tmp, n * sizeof(values[0]));
+	std::cout << "\t|\t" << GetSortTime(algorithm2, values, n) / 1e6 << "ms" << '\n';
+
+	std::memcpy(values, tmp, n * sizeof(values[0]));
+	std::cout << "Comparisons:\t" << GetSortComparisons(algorithm, values, n);
+	std::memcpy(values, tmp, n * sizeof(values[0]));
+	std::cout << "\t|\t" << GetSortComparisons(algorithm2, values, n) << '\n';
+
+	std::cout << '\n';
+
+	delete []tmp;
 }
 
 /*
@@ -138,8 +156,10 @@ int main(int argc, char **argv) {
 			std::cout << "Input file:\t" << argv[3] << '\n';
 		std::cout << "Input size:\t" << n << '\n';
 
-		if (values)
+		if (values) {
 			RunBenchmark(algo, values, n, outputFlags);
+			WriteFile("output.txt", values, n);
+		}
 		else {
 			values = new int[n];
 			if (order == -1 || order == InputOrder::Random) {
@@ -171,7 +191,10 @@ int main(int argc, char **argv) {
 											values, n);
 				RunBenchmark(algo, values, n, outputFlags);
 			}
+			if (order != -1)
+				WriteFile("output.txt", values, n);
 		}
+
 		delete []values;
 	} else if (strcmp(argv[1], "-c") == 0) {
 		if (argc < 5)
@@ -199,8 +222,23 @@ int main(int argc, char **argv) {
 		if (values)
 			std::cout << "Input file:\t" << argv[4] << '\n';
 		std::cout << "Input size:\t" << n << '\n';
-		if (!values)
-			std::cout << "Input order:\t" << INPUT_ORDER_NAMES[order] << '\n';
+
+		if (!values) {
+			values = new int[n];
+
+			std::cout << "\nInput order: " << INPUT_ORDER_NAMES[order] << '\n';
+			if (order == InputOrder::Random)
+				RNG::FillRandom(values, n);
+			if (order == InputOrder::NearlySorted)
+				RNG::FillNearlySorted(values, n);
+			if (order == InputOrder::Sorted)
+				RNG::FillSorted(values, n);
+			else if (order == InputOrder::ReverseSorted)
+				RNG::FillReverseSorted(values, n);
+
+			WriteFile("input.txt", values, n);
+		}
+		RunComparison(algo, algo2, values, n);
 
 		delete []values;
 	} else
