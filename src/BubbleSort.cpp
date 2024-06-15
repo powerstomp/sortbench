@@ -3,16 +3,30 @@
 #include <utility>
 
 void Sort::Bubble::Apply(int *data, int n) {
-	for (int i = 0; i < n - 1; i++)
-		for (int j = i + 1; j < n; j++)
-			if (data[i] > data[j])
-				std::swap(data[i], data[j]);
+	for (int step = 0; step < n - 1; step++) {
+		bool swapped = false;
+		for (int i = 0; i < n - step - 1; i++) {
+			if (data[i] > data[i + 1]) {
+				std::swap(data[i], data[i + 1]);
+				swapped = true;
+			}
+		}
+		if (!swapped)
+			break;
+	}
 }
 int Sort::Bubble::CountComparisons(int *data, int n) {
 	int count = 0;
-	for (int i = 0; ++count && i < n - 1; i++)
-		for (int j = i + 1; ++count && j < n; j++)
-			if (++count && data[i] > data[j])
-				;
+	for (int step = 0; ++count && step < n - 1; step++) {
+		bool swapped = false;
+		for (int i = 0; ++count && i < n - step - 1; i++) {
+			if (++count && data[i] > data[i + 1]) {
+				std::swap(data[i], data[i + 1]);
+				swapped = true;
+			}
+		}
+		if (++count && !swapped)
+			break;
+	}
 	return count;
 }
