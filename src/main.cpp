@@ -1,10 +1,21 @@
 #include "Types.h"
 #include "BubbleSort.h"
+#include "RNG.h"
+#include "Stopwatch.h"
 
+#include <cassert>
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 #define EXIT(id, msg) { std::cout << msg; return (id); }
+
+bool IsSorted(int *values, int n) {
+	for (int i = 0; i < n - 1; i++)
+		if (values[i] > values[i + 1])
+			return false;
+	return true;
+}
 
 int* LoadFile(const char *name, int &n) {
 	std::ifstream file(name);
@@ -19,6 +30,7 @@ int* LoadFile(const char *name, int &n) {
 
 	return values;
 }
+
 bool WriteFile(const char *name, int *values, int n) {
 	std::ofstream file(name);
 	if (!file.good())
@@ -31,9 +43,64 @@ bool WriteFile(const char *name, int *values, int n) {
 	return true;
 }
 
+long long GetSortTime(int algorithm, int *values, int n) {
+	static Stopwatch stopwatch;
+
+	int *tmp = new int[n];
+	std::memcpy(tmp, values, n * sizeof(tmp[0]));
+
+	#define BENCH(command) { \
+		stopwatch.Start(); \
+		{ command; } \
+		assert(IsSorted(tmp, n)); \
+		delete []tmp; \
+		return stopwatch.Get(); \
+	}
+
+	if (algorithm == SortType::Bubble)
+		BENCH(Sort::Bubble::Apply(tmp, n));
+
+	#undef BENCH
+
+	return -1;
+}
+
+int GetSortComparisons(int algorithm, int *values, int n) {
+	int *tmp = new int[n];
+	std::memcpy(tmp, values, n * sizeof(tmp[0]));
+
+	#define BENCH(command) { \
+		int result = command; \
+		assert(IsSorted(tmp, n)); \
+		delete []tmp; \
+		return result; \
+	}
+
+	if (algorithm == SortType::Bubble)
+		BENCH(Sort::Bubble::CountComparisons(tmp, n));
+
+	return -1;
+}
+
+void RunBenchmark(int algorithm, int *values, int n, int flags) {
+	std::cout << "--------------------------------\n";
+	if (flags & OutputType::Time)
+		std::cout << "Running time:\t" << GetSortTime(algorithm, values, n) / 1e6 << '\n';
+	if (flags & OutputType::Comparisons)
+		std::cout << "Comparisons:\t" << GetSortComparisons(algorithm, values, n);
+	std::cout << '\n';
+}
+
 /*
-	1: Argument not found
-	2: Invalid argument
+	Commands:
+		1: Algorithm, input file
+		2: Algorithm, n with order
+		3: Algorithm, n
+		4: Comparison, input file
+		5: Comparison, n
+	Exit codes:
+		1: Argument not found
+		2: Invalid argument
 */
 int main(int argc, char **argv) {
 	if (argc < 4)
@@ -70,6 +137,42 @@ int main(int argc, char **argv) {
 		if (values)
 			std::cout << "Input file:\t" << argv[3] << '\n';
 		std::cout << "Input size:\t" << n << '\n';
+
+		if (values)
+			RunBenchmark(algo, values, n, outputFlags);
+		else {
+			values = new int[n];
+			if (order == -1 || order == InputOrder::Random) {
+				std::cout << "\nInput order: Random\n";
+				RNG::FillRandom(values, n);
+				WriteFile(order == -1 ? "input_1.txt" : "input.txt",
+											values, n);
+				RunBenchmark(algo, values, n, outputFlags);
+			}
+			if (order == -1 || order == InputOrder::NearlySorted) {
+				std::cout << "\nInput order: Nearly Sorted\n";
+				RNG::FillNearlySorted(values, n);
+				WriteFile(order == -1 ? "input_2.txt" : "input.txt",
+															values, n);
+				RunBenchmark(algo, values, n, outputFlags);
+			}
+			if (order == -1 || order == InputOrder::Sorted) {
+				std::cout << "\nInput order: Sorted\n";
+				RNG::FillSorted(values, n);
+				WriteFile(order == -1 ? "input_3.txt" : "input.txt",
+															values, n);
+				RunBenchmark(algo, values, n, outputFlags);
+
+			}
+			if (order == -1 || order == InputOrder::ReverseSorted) {
+				std::cout << "\nInput order: Reverse Sorted\n";
+				RNG::FillReverseSorted(values, n);
+				WriteFile(order == -1 ? "input_4.txt" : "input.txt",
+											values, n);
+				RunBenchmark(algo, values, n, outputFlags);
+			}
+		}
+		delete []values;
 	} else if (strcmp(argv[1], "-c") == 0) {
 		if (argc < 5)
 			EXIT(1, "Not enough arguments.");
@@ -80,7 +183,7 @@ int main(int argc, char **argv) {
 			EXIT(2, "Invalid algorithm.");
 
 		int n, order;
-		int *values;
+		int *values = nullptr;
 		if (argc == 5) {
 			if (!(values = LoadFile(argv[4], n)))
 				EXIT(2, "File not found.");
@@ -98,6 +201,8 @@ int main(int argc, char **argv) {
 		std::cout << "Input size:\t" << n << '\n';
 		if (!values)
 			std::cout << "Input order:\t" << INPUT_ORDER_NAMES[order] << '\n';
+
+		delete []values;
 	} else
 		EXIT(2, "Invalid mode.");
 
