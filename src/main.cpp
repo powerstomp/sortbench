@@ -1,5 +1,7 @@
 #include "Types.h"
 #include "BubbleSort.h"
+#include "InsertionSort.h"
+#include "HeapSort.h"
 #include "RNG.h"
 #include "Stopwatch.h"
 
@@ -53,22 +55,30 @@ long long GetSortTime(int algorithm, int *values, int n) {
 	}
 
 	if (algorithm == SortType::Bubble)
-		BENCH(Sort::Bubble::Apply(values, n));
+		BENCH(Sort::Bubble::Apply(values, n))
+	else if (algorithm == SortType::Insertion)
+		BENCH(Sort::Insertion::Apply(values, n))
+	else if (algorithm == SortType::Heap)
+		BENCH(Sort::Heap::Apply(values, n))
 
 	#undef BENCH
 
 	return -1;
 }
 
-int GetSortComparisons(int algorithm, int *values, int n) {
+long long GetSortComparisons(int algorithm, int *values, int n) {
 	#define BENCH(command) { \
-		int result = command; \
+		long long result = command; \
 		assert(IsSorted(values, n)); \
 		return result; \
 	}
 
 	if (algorithm == SortType::Bubble)
-		BENCH(Sort::Bubble::CountComparisons(values, n));
+		BENCH(Sort::Bubble::CountComparisons(values, n))
+	else if (algorithm == SortType::Insertion)
+		BENCH(Sort::Insertion::CountComparisons(values, n))
+	else if (algorithm == SortType::Heap)
+		BENCH(Sort::Heap::CountComparisons(values, n))
 
 	return -1;
 }
