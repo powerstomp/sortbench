@@ -5,7 +5,11 @@
 
 void Sort::Counting::Apply(int *data, int size)
 {
-    int max = *std::max_element(data, data + size);
+    int max = 0;
+    for (int i = 0; i < size; ++i)
+        if (data[i] > max)
+            max = data[i];
+
     int *count = new int[max + 1]();
     for (int i = 0; i < size; ++i)
         ++count[data[i]];
@@ -24,10 +28,14 @@ void Sort::Counting::Apply(int *data, int size)
     delete[] temp;
 }
 
-int Sort::Counting::CountComparisons(int *data, int size)
+long long Sort::Counting::CountComparisons(int *data, int size)
 {
-    int count = 0;
-    int max = *std::max_element(data, data + size);
+    long long count = 0;
+    int max = 0;
+    for (int i = 0; ++count && i < size; ++i)
+        if (++count && data[i] > max)
+            max = data[i];
+
     int *countArray = new int[max + 1]();
     for (int i = 0; ++count && i < size; ++i)
         ++countArray[data[i]];

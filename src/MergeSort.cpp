@@ -32,10 +32,10 @@ void Sort::Merge::Apply(int *data, int start, int end)
     }
 }
 
-int Sort::Merge::CountComparisons(int *data, int start, int end)
+long long Sort::Merge::CountComparisons(int *data, int start, int end)
 {
-    int count = 0;
-    if (start < end)
+    long long count = 0;
+    if (++count && start < end)
     {
         int mid = start + (end - start) / 2;
         count += CountComparisons(data, start, mid);
@@ -43,7 +43,7 @@ int Sort::Merge::CountComparisons(int *data, int start, int end)
 
         int i = start, j = mid + 1, k = 0;
         int *temp = new int[end - start + 1];
-        while (++count && i <= mid && j <= end)
+        while (++count && i <= mid && ++count && j <= end)
             if (++count && data[i] < data[j])
                 temp[k++] = data[i++];
 

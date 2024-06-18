@@ -16,9 +16,10 @@ void Sort::Selection::Apply(int *data, int n)
     }
 }
 
-int Sort::Selection::CountComparisons(int *data, int n)
+long long Sort::Selection::CountComparisons(int *data, int n)
 {
-    int count = 0, min;
+    long long count = 0;
+    int min;
     for (int i = 0; ++count && i < n - 1; i++)
     {
         min = i;

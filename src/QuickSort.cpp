@@ -5,7 +5,7 @@
 
 void Sort::Quick::Apply(int *data, int start, int end)
 {
-    int left = start, right = end, x = data[start + rand() % (end - start + 1)];
+    int left = start, right = end, x = data[start + (end - start) / 2];
     while (left <= right)
     {
         while (data[left] < x)
@@ -24,10 +24,10 @@ void Sort::Quick::Apply(int *data, int start, int end)
         Apply(data, left, end);
 }
 
-int Sort::Quick::CountComparisons(int *data, int start, int end)
+long long Sort::Quick::CountComparisons(int *data, int start, int end)
 {
-    int count = 0;
-    int left = start, right = end, x = data[start + rand() % (end - start + 1)];
+    long long count = 0;
+    int left = start, right = end, x = data[start + (end - start) / 2];
     while (++count && left <= right)
     {
         while (++count && data[left] < x)

@@ -83,7 +83,7 @@ long long GetSortTime(int algorithm, int *values, int n)
 	return -1;
 }
 
-int GetSortComparisons(int algorithm, int *values, int n)
+long long GetSortComparisons(int algorithm, int *values, int n)
 {
 #define BENCH(command)               \
 	{                                \
