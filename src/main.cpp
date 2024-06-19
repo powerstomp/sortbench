@@ -1,9 +1,11 @@
 #include "Types.h"
 #include "BubbleSort.h"
+#include "InsertionSort.h"
+#include "HeapSort.h"
+#include "SelectionSort.h"
 #include "QuickSort.h"
 #include "MergeSort.h"
 #include "CountingSort.h"
-#include "SelectionSort.h"
 #include "RNG.h"
 #include "Stopwatch.h"
 
@@ -69,14 +71,18 @@ long long GetSortTime(int algorithm, int *values, int n)
 
 	if (algorithm == SortType::Bubble)
 		BENCH(Sort::Bubble::Apply(values, n))
+	else if (algorithm == SortType::Insertion)
+		BENCH(Sort::Insertion::Apply(values, n))
+	else if (algorithm == SortType::Heap)
+		BENCH(Sort::Heap::Apply(values, n))
+	else if (algorithm == SortType::Selection)
+		BENCH(Sort::Selection::Apply(values, n))
 	else if (algorithm == SortType::Quick)
 		BENCH(Sort::Quick::Apply(values, 0, n - 1))
 	else if (algorithm == SortType::Merge)
 		BENCH(Sort::Merge::Apply(values, 0, n - 1))
 	else if (algorithm == SortType::Counting)
 		BENCH(Sort::Counting::Apply(values, n))
-	else if (algorithm == SortType::Selection)
-		BENCH(Sort::Selection::Apply(values, n))
 
 #undef BENCH
 
@@ -87,21 +93,25 @@ long long GetSortComparisons(int algorithm, int *values, int n)
 {
 #define BENCH(command)               \
 	{                                \
-		int result = command;        \
+		long long result = command;  \
 		assert(IsSorted(values, n)); \
 		return result;               \
 	}
 
 	if (algorithm == SortType::Bubble)
 		BENCH(Sort::Bubble::CountComparisons(values, n))
+	else if (algorithm == SortType::Insertion)
+		BENCH(Sort::Insertion::CountComparisons(values, n))
+	else if (algorithm == SortType::Heap)
+		BENCH(Sort::Heap::CountComparisons(values, n))
+	else if (algorithm == SortType::Selection)
+		BENCH(Sort::Selection::CountComparisons(values, n))
 	else if (algorithm == SortType::Quick)
 		BENCH(Sort::Quick::CountComparisons(values, 0, n - 1))
 	else if (algorithm == SortType::Merge)
 		BENCH(Sort::Merge::CountComparisons(values, 0, n - 1))
 	else if (algorithm == SortType::Counting)
 		BENCH(Sort::Counting::CountComparisons(values, n))
-	else if (algorithm == SortType::Selection)
-		BENCH(Sort::Selection::CountComparisons(values, n))
 
 	return -1;
 }
