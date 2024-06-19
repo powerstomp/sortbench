@@ -15,8 +15,8 @@ void Sort::Bubble::Apply(int *data, int n) {
 			break;
 	}
 }
-int Sort::Bubble::CountComparisons(int *data, int n) {
-	int count = 0;
+long long Sort::Bubble::CountComparisons(int *data, int n) {
+	long long count = 0;
 	for (int step = 0; ++count && step < n - 1; step++) {
 		bool swapped = false;
 		for (int i = 0; ++count && i < n - step - 1; i++) {
