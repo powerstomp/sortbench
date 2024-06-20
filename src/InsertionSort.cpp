@@ -24,5 +24,5 @@ long long Sort::Insertion::CountComparisons(int* a, int n){
 }
 /*
 Source: 
-	ms Nhung's slides
+	ms Thao's slides
 */

@@ -47,7 +47,7 @@ long long Sort::Heap::CountComparisons(int* a, int n){
 }
 /*
 Source: 
-	ms Nhung's slides
+	ms Thao's slides
 	GeeksForGeeks: https://www.geeksforgeeks.org/heap-sort/
 	educative.io: https://www.educative.io/answers/how-to-build-a-max-heap-using-an-array
 */
