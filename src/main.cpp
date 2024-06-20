@@ -6,6 +6,7 @@
 #include "QuickSort.h"
 #include "MergeSort.h"
 #include "CountingSort.h"
+#include "RadixSort.h"
 #include "RNG.h"
 #include "Stopwatch.h"
 
@@ -83,6 +84,8 @@ long long GetSortTime(int algorithm, int *values, int n)
 		BENCH(Sort::Merge::Apply(values, 0, n - 1))
 	else if (algorithm == SortType::Counting)
 		BENCH(Sort::Counting::Apply(values, n))
+	else if (algorithm == SortType::Radix)
+		BENCH(Sort::Radix::Apply(values, n))
 
 #undef BENCH
 
@@ -112,6 +115,8 @@ long long GetSortComparisons(int algorithm, int *values, int n)
 		BENCH(Sort::Merge::CountComparisons(values, 0, n - 1))
 	else if (algorithm == SortType::Counting)
 		BENCH(Sort::Counting::CountComparisons(values, n))
+	else if (algorithm == SortType::Radix)
+		BENCH(Sort::Radix::CountComparisons(values, n))
 
 	return -1;
 }
