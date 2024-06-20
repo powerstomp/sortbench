@@ -2,6 +2,10 @@
 #include "BubbleSort.h"
 #include "InsertionSort.h"
 #include "HeapSort.h"
+#include "SelectionSort.h"
+#include "QuickSort.h"
+#include "MergeSort.h"
+#include "CountingSort.h"
 #include "RNG.h"
 #include "Stopwatch.h"
 
@@ -9,16 +13,22 @@
 #include <fstream>
 #include <iostream>
 
-#define EXIT(id, msg) { std::cout << msg; return (id); }
+#define EXIT(id, msg)     \
+	{                     \
+		std::cout << msg; \
+		return (id);      \
+	}
 
-bool IsSorted(int *values, int n) {
+bool IsSorted(int *values, int n)
+{
 	for (int i = 0; i < n - 1; i++)
 		if (values[i] > values[i + 1])
 			return false;
 	return true;
 }
 
-int* LoadFile(const char *name, int &n) {
+int *LoadFile(const char *name, int &n)
+{
 	std::ifstream file(name);
 	if (!file.good())
 		return nullptr;
@@ -32,7 +42,8 @@ int* LoadFile(const char *name, int &n) {
 	return values;
 }
 
-bool WriteFile(const char *name, int *values, int n) {
+bool WriteFile(const char *name, int *values, int n)
+{
 	std::ofstream file(name);
 	if (!file.good())
 		return false;
@@ -44,14 +55,18 @@ bool WriteFile(const char *name, int *values, int n) {
 	return true;
 }
 
-long long GetSortTime(int algorithm, int *values, int n) {
+long long GetSortTime(int algorithm, int *values, int n)
+{
 	static Stopwatch stopwatch;
 
-	#define BENCH(command) { \
-		stopwatch.Start(); \
-		{ command; } \
+#define BENCH(command)               \
+	{                                \
+		stopwatch.Start();           \
+		{                            \
+			command;                 \
+		}                            \
 		assert(IsSorted(values, n)); \
-		return stopwatch.Get(); \
+		return stopwatch.Get();      \
 	}
 
 	if (algorithm == SortType::Bubble)
@@ -60,17 +75,27 @@ long long GetSortTime(int algorithm, int *values, int n) {
 		BENCH(Sort::Insertion::Apply(values, n))
 	else if (algorithm == SortType::Heap)
 		BENCH(Sort::Heap::Apply(values, n))
+	else if (algorithm == SortType::Selection)
+		BENCH(Sort::Selection::Apply(values, n))
+	else if (algorithm == SortType::Quick)
+		BENCH(Sort::Quick::Apply(values, 0, n - 1))
+	else if (algorithm == SortType::Merge)
+		BENCH(Sort::Merge::Apply(values, 0, n - 1))
+	else if (algorithm == SortType::Counting)
+		BENCH(Sort::Counting::Apply(values, n))
 
-	#undef BENCH
+#undef BENCH
 
 	return -1;
 }
 
-long long GetSortComparisons(int algorithm, int *values, int n) {
-	#define BENCH(command) { \
-		long long result = command; \
+long long GetSortComparisons(int algorithm, int *values, int n)
+{
+#define BENCH(command)               \
+	{                                \
+		long long result = command;  \
 		assert(IsSorted(values, n)); \
-		return result; \
+		return result;               \
 	}
 
 	if (algorithm == SortType::Bubble)
@@ -79,28 +104,39 @@ long long GetSortComparisons(int algorithm, int *values, int n) {
 		BENCH(Sort::Insertion::CountComparisons(values, n))
 	else if (algorithm == SortType::Heap)
 		BENCH(Sort::Heap::CountComparisons(values, n))
+	else if (algorithm == SortType::Selection)
+		BENCH(Sort::Selection::CountComparisons(values, n))
+	else if (algorithm == SortType::Quick)
+		BENCH(Sort::Quick::CountComparisons(values, 0, n - 1))
+	else if (algorithm == SortType::Merge)
+		BENCH(Sort::Merge::CountComparisons(values, 0, n - 1))
+	else if (algorithm == SortType::Counting)
+		BENCH(Sort::Counting::CountComparisons(values, n))
 
 	return -1;
 }
 
-void RunBenchmark(int algorithm, int *values, int n, int flags) {
+void RunBenchmark(int algorithm, int *values, int n, int flags)
+{
 	int *tmp = new int[n];
 	std::memcpy(tmp, values, n * sizeof(tmp[0]));
 
 	std::cout << "--------------------------------\n";
 	if (flags & OutputType::Time)
 		std::cout << "Running time:\t" << GetSortTime(algorithm, values, n) / 1e6 << "ms" << '\n';
-	if (flags & OutputType::Comparisons) {
+	if (flags & OutputType::Comparisons)
+	{
 		std::memcpy(values, tmp, n * sizeof(values[0]));
 		std::cout << "Comparisons:\t" << GetSortComparisons(algorithm, values, n) << '\n';
 	}
 	std::cout << '\n';
 
-	delete []tmp;
+	delete[] tmp;
 }
 
 void RunComparison(int algorithm, int algorithm2,
-							int *values, int n) {
+				   int *values, int n)
+{
 	int *tmp = new int[n];
 	std::memcpy(tmp, values, n * sizeof(tmp[0]));
 
@@ -116,7 +152,7 @@ void RunComparison(int algorithm, int algorithm2,
 
 	std::cout << '\n';
 
-	delete []tmp;
+	delete[] tmp;
 }
 
 /*
@@ -130,18 +166,21 @@ void RunComparison(int algorithm, int algorithm2,
 		1: Argument not found
 		2: Invalid argument
 */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	if (argc < 4)
 		EXIT(1, "Not enough arguments.");
 
-	if (strcmp(argv[1], "-a") == 0) {
+	if (strcmp(argv[1], "-a") == 0)
+	{
 		int algo = ParseOption(argv[2], SORTS, SORT_COUNT);
 		if (algo == -1)
 			EXIT(2, "Invalid algorithm.");
 
 		int tmp, outputFlags = 0;
 		while ((tmp = ParseOption(argv[argc - 1],
-							OUTPUT_TYPES, OUTPUT_TYPE_COUNT)) != -1) {
+								  OUTPUT_TYPES, OUTPUT_TYPE_COUNT)) != -1)
+		{
 			outputFlags |= tmp;
 			argc--;
 		}
@@ -150,10 +189,12 @@ int main(int argc, char **argv) {
 
 		int n, order = -1;
 		int *values = LoadFile(argv[3], n);
-		if (!values) {
+		if (!values)
+		{
 			n = atoi(argv[3]);
 
-			if (argc > 4) {
+			if (argc > 4)
+			{
 				order = ParseOption(argv[4], INPUT_ORDERS, INPUT_ORDER_COUNT);
 				if (order == -1)
 					EXIT(2, "Invalid input order.");
@@ -166,47 +207,54 @@ int main(int argc, char **argv) {
 			std::cout << "Input file:\t" << argv[3] << '\n';
 		std::cout << "Input size:\t" << n << '\n';
 
-		if (values) {
+		if (values)
+		{
 			RunBenchmark(algo, values, n, outputFlags);
 			WriteFile("output.txt", values, n);
 		}
-		else {
+		else
+		{
 			values = new int[n];
-			if (order == -1 || order == InputOrder::Random) {
+			if (order == -1 || order == InputOrder::Random)
+			{
 				std::cout << "\nInput order: Random\n";
 				RNG::FillRandom(values, n);
 				WriteFile(order == -1 ? "input_1.txt" : "input.txt",
-											values, n);
+						  values, n);
 				RunBenchmark(algo, values, n, outputFlags);
 			}
-			if (order == -1 || order == InputOrder::NearlySorted) {
+			if (order == -1 || order == InputOrder::NearlySorted)
+			{
 				std::cout << "\nInput order: Nearly Sorted\n";
 				RNG::FillNearlySorted(values, n);
 				WriteFile(order == -1 ? "input_2.txt" : "input.txt",
-															values, n);
+						  values, n);
 				RunBenchmark(algo, values, n, outputFlags);
 			}
-			if (order == -1 || order == InputOrder::Sorted) {
+			if (order == -1 || order == InputOrder::Sorted)
+			{
 				std::cout << "\nInput order: Sorted\n";
 				RNG::FillSorted(values, n);
 				WriteFile(order == -1 ? "input_3.txt" : "input.txt",
-															values, n);
+						  values, n);
 				RunBenchmark(algo, values, n, outputFlags);
-
 			}
-			if (order == -1 || order == InputOrder::ReverseSorted) {
+			if (order == -1 || order == InputOrder::ReverseSorted)
+			{
 				std::cout << "\nInput order: Reverse Sorted\n";
 				RNG::FillReverseSorted(values, n);
 				WriteFile(order == -1 ? "input_4.txt" : "input.txt",
-											values, n);
+						  values, n);
 				RunBenchmark(algo, values, n, outputFlags);
 			}
 			if (order != -1)
 				WriteFile("output.txt", values, n);
 		}
 
-		delete []values;
-	} else if (strcmp(argv[1], "-c") == 0) {
+		delete[] values;
+	}
+	else if (strcmp(argv[1], "-c") == 0)
+	{
 		if (argc < 5)
 			EXIT(1, "Not enough arguments.");
 
@@ -217,10 +265,13 @@ int main(int argc, char **argv) {
 
 		int n, order;
 		int *values = nullptr;
-		if (argc == 5) {
+		if (argc == 5)
+		{
 			if (!(values = LoadFile(argv[4], n)))
 				EXIT(2, "File not found.");
-		} else {
+		}
+		else
+		{
 			n = atoi(argv[4]);
 			order = ParseOption(argv[5], INPUT_ORDERS, INPUT_ORDER_COUNT);
 			if (order == -1)
@@ -233,7 +284,8 @@ int main(int argc, char **argv) {
 			std::cout << "Input file:\t" << argv[4] << '\n';
 		std::cout << "Input size:\t" << n << '\n';
 
-		if (!values) {
+		if (!values)
+		{
 			values = new int[n];
 
 			std::cout << "\nInput order: " << INPUT_ORDER_NAMES[order] << '\n';
@@ -250,8 +302,9 @@ int main(int argc, char **argv) {
 		}
 		RunComparison(algo, algo2, values, n);
 
-		delete []values;
-	} else
+		delete[] values;
+	}
+	else
 		EXIT(2, "Invalid mode.");
 
 	return 0;
