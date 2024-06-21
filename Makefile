@@ -38,7 +38,7 @@ INPUT_SIZES = 10000 30000 50000 100000 300000 500000
 OUTPUTS = $(foreach size,$(INPUT_SIZES),$(foreach sort,$(SORTS),benchmarks/$(sort)-$(size).txt))
 
 define AddBenchmark
-benchmarks/$(1)-$(2).txt: $(TARGET)
+benchmarks/$(1)-$(2).txt: | benchmarks $(TARGET)
 	-$(RM) "benchmarks$(SLASH)$(1)-$(2).txt"
 	$(TARGET) -a $(1) $(2) -both > bench-$(1)-$(2).tmp
 	rename bench-$(1)-$(2).tmp "benchmarks/$(1)-$(2).txt"
@@ -49,6 +49,6 @@ $(foreach sort,$(SORTS),$(foreach size,$(INPUT_SIZES),$(eval $(call AddBenchmark
 benchmarks:
 	mkdir benchmarks
 
-benchmark: $(TARGET) benchmarks | $(OUTPUTS)
+benchmark: $(OUTPUTS)
 
 .PHONY: all debug clean benchmark
