@@ -29,3 +29,22 @@ obj:
 clean:
 	-$(RM) obj
 	-$(RM) $(TARGET)
+
+SORTS = bubble-sort counting-sort heap-sort insertion-sort merge-sort quick-sort selection-sort
+INPUT_SIZES = 10000 30000 50000 100000 300000 500000
+OUTPUTS = $(foreach size,$(INPUT_SIZES),$(foreach sort,$(SORTS),benchmarks/$(sort)-$(size).txt))
+
+define AddBenchmark
+benchmarks/$(1)-$(2).txt:
+	$(TARGET) -a $(1) $(2) -both > bench.tmp
+	rename bench.tmp "benchmarks/$(1)-$(2).txt"
+endef
+
+$(foreach sort,$(SORTS),$(foreach size,$(INPUT_SIZES),$(eval $(call AddBenchmark,$(sort),$(size)))))
+
+benchmarks:
+	mkdir benchmarks
+
+benchmark: $(TARGET) benchmarks | $(OUTPUTS)
+
+.PHONY: all debug clean benchmark
