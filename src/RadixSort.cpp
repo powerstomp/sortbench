@@ -1,4 +1,5 @@
- #include "RadixSort.h"
+#include "RadixSort.h"
+#include <climits>
 
 int getdigit(int n, int place){
     int digit = 0;
@@ -9,7 +10,7 @@ int getdigit(int n, int place){
 }
 
 void internalCountingSRT(int* a, int n, int place){
-    int max = -2e31;
+    int max = INT_MIN;
 	for(int i = 0; i < n; i++)
 		if(getdigit(a[i], place) > max) max = getdigit(a[i], place);
 	
@@ -44,7 +45,7 @@ long long cntCMPgetdigit(int n, int place, long long &count){
 
 long long cntCMPinternalCountingSRT(int* a, int n, int place){
     long long count = 0;
-    int max = -2e31;
+    int max = INT_MIN;
 	for(int i = 0; ++count && i < n; i++)
 		if(++count && cntCMPgetdigit(a[i], place, count) > max) max = cntCMPgetdigit(a[i], place, count);
 	
@@ -71,7 +72,7 @@ long long cntCMPinternalCountingSRT(int* a, int n, int place){
 
 
 void Sort::Radix::Apply(int* a, int n){
-    int max = -2e31;
+    int max = INT_MIN;
 	for(int i = 0; i < n; i++)
 		if(a[i] > max) max = a[i];
 	int maxREPLACEMENT = max, i = 1;
@@ -85,7 +86,7 @@ void Sort::Radix::Apply(int* a, int n){
 long long Sort::Radix::CountComparisons(int* a, int n){
     long long count = 0;
     
-    int max = -2e31;
+    int max = INT_MIN;
 	for(int i = 0; ++count && i < n; i++)
 		if(++count && a[i] > max) max = a[i];
 	int maxREPLACEMENT = max, i = 1;
