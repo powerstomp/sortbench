@@ -75,11 +75,11 @@ void Sort::Radix::Apply(int* a, int n){
     int max = INT_MIN;
 	for(int i = 0; i < n; i++)
 		if(a[i] > max) max = a[i];
-	int maxREPLACEMENT = max, i = 1;
-	while(maxREPLACEMENT > 0){
+	int i = 1;
+	while(max > 0){
 		internalCountingSRT(a, n, i);
 		i++;
-		maxREPLACEMENT/=10;
+		max/=10;
 	}
 }
 
@@ -89,14 +89,11 @@ long long Sort::Radix::CountComparisons(int* a, int n){
     int max = INT_MIN;
 	for(int i = 0; ++count && i < n; i++)
 		if(++count && a[i] > max) max = a[i];
-	int maxREPLACEMENT = max, i = 1;
-	while(++count && maxREPLACEMENT > 0){
+	int i = 1;
+	while(++count && max > 0){
 		count += cntCMPinternalCountingSRT(a, n, i);
 		i++;
-		maxREPLACEMENT/=10;
+		max/=10;
 	}
-	//i is now digit count of greatest num
-	//for(int iter = 1; ++count && iter <= i; iter++)
-	//	count += cntCMPinternalCountingSRT(a, n, iter);
     return count;
 }
