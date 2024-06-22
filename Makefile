@@ -17,6 +17,7 @@ OBJECTS = $(patsubst src/%.cpp,obj/%.o,$(SOURCES))
 all: CXXFLAGS += -DNDEBUG
 all: $(TARGET)
 
+debug: CXXFLAGS += -DFORCE_SEED
 debug: $(TARGET)
 
 $(TARGET): $(OBJECTS)
