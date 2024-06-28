@@ -65,7 +65,7 @@ void Sort::Flash::Apply(int* data, int n) {
 long long Sort::Flash::CountComparisons(int* data, int n) {
     long long res = 0;
     //send help
-    if (++res && n <= 1) return; 
+    if (++res && n <= 1) return res; 
 
     int bucketCount = n * 0.45;
     int elementCounts[9000000000] = {0};
@@ -79,7 +79,7 @@ long long Sort::Flash::CountComparisons(int* data, int n) {
         if(++res && data[i] > maxVal)
         maxVal = data[i];
     }
-    if(++res && minVal == maxVal) return;
+    if(++res && minVal == maxVal) return res;
 
     for(int i = 0; ++res && i < n; i++)
     {
