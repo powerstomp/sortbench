@@ -68,7 +68,7 @@ long long Sort::Flash::CountComparisons(int* data, int n) {
     if (++res && n <= 1) return res; 
 
     int bucketCount = n * 0.45;
-    int elementCounts[9000000000] = {0};
+    std::vector<int> elementCounts(bucketsCount,0);
 
     int minVal = data[0];
     int maxVal = data[0];
