@@ -20,7 +20,7 @@ void Sort::Shell::Apply(int *data, int n)
 
 long long Sort::Shell::CountComparisons(int *data, int n)
 {
-    long long count;
+    long long count = 0;
     for (int gap = n/2; ++count && gap > 0; gap /= 2)
     {
         for (int i = gap; ++count && i < n; i++)
