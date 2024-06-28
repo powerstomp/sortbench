@@ -4,7 +4,7 @@ void Sort::Flash::Apply(int* data, int n) {
 //send help
     if (n <= 1) return; 
 
-    int bucketCount = n * 0.45;
+    int bucketCount = n * 0.4;
     std::vector<int> elementCounts(bucketCount,0);
 
     int minVal = data[0];
