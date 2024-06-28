@@ -5,7 +5,7 @@ void Sort::Flash::Apply(int* data, int n) {
     if (n <= 1) return; 
 
     int bucketCount = n * 0.45;
-    int elementCounts[9000000000] = {0};
+    std::vector<int> elementCounts(bucketsCount,0);
 
     int minVal = data[0];
     int maxVal = data[0];
