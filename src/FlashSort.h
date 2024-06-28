@@ -1,4 +1,5 @@
 #include <utility>
+#include <vector>
 
 namespace Sort::Flash{
     void Apply(int* a, int n);
