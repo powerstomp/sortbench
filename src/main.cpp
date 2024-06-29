@@ -9,6 +9,7 @@
 #include "RadixSort.h"
 #include "ShellSort.h"
 #include "FlashSort.h"
+#include "ShakerSort.h"
 #include "RNG.h"
 #include "Stopwatch.h"
 
@@ -92,6 +93,8 @@ long long GetSortTime(int algorithm, int *values, int n)
 		BENCH(Sort::Shell::Apply(values, n))	
 	else if (algorithm == SortType::Flash)
 		BENCH(Sort::Flash::Apply(values, n))	
+	else if (algorithm == SortType::Shaker)
+		BENCH(Sort::Shaker::Apply(values, n))	
 
 #undef BENCH
 
@@ -127,6 +130,8 @@ long long GetSortComparisons(int algorithm, int *values, int n)
 		BENCH(Sort::Shell::CountComparisons(values, n))	
 	else if (algorithm == SortType::Flash)
 		BENCH(Sort::Flash::CountComparisons(values, n))	
+	else if (algorithm == SortType::Shaker)
+		BENCH(Sort::Shaker::CountComparisons(values, n))	
 
 	return -1;
 }
