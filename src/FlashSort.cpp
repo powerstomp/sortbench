@@ -5,6 +5,7 @@ void Sort::Flash::Apply(int* data, int n) {
     if (n <= 1) return; 
 
     int bucketCount = floor(n * 0.45);
+    if(bucketCount < 2) bucketCount = 2;
     std::vector<int> elementCounts(bucketCount, 0);
 
     int minVal = data[0],  maxVal = data[0];
@@ -19,8 +20,7 @@ void Sort::Flash::Apply(int* data, int n) {
 
     for(int i = 0; i < n; i++)
     {
-        int curBucket = static_cast<int>((data[i] - minVal) * bucketCount / (maxVal - minVal));
-        if(data[i] == maxVal) curBucket = bucketCount-1;
+        int curBucket = (bucketCount - 1ll) * (data[i] - minVal) / (maxVal - minVal);
         elementCounts[curBucket]++;
     }
     for(int i = 1; i < bucketCount; i++)
@@ -32,24 +32,21 @@ void Sort::Flash::Apply(int* data, int n) {
     int count = 0, index = 0;
     while(count < n)
     {
-        int curBucket = int((data[index] - minVal) * bucketCount / (maxVal - minVal));
-        if(data[index] == maxVal) curBucket = bucketCount-1;
-        while(index >= elementCounts[curBucket] && index < n)
+        int curBucket = (bucketCount - 1ll) * (data[index] - minVal) / (maxVal - minVal);
+        while(index >= elementCounts[curBucket])
         {
             index++;
-            curBucket = static_cast<int>((data[index] - minVal) * bucketCount / (maxVal - minVal));
-            if(data[index] == maxVal) curBucket = bucketCount-1;
+            curBucket = (bucketCount - 1ll) * (data[index] - minVal) / (maxVal - minVal);
         }
         //swap
+        int temp = data[index];
         while(index < elementCounts[curBucket])
         {
-            int temp = data[index];
+            curBucket = (bucketCount - 1ll) * (temp - minVal) / (maxVal - minVal);
             elementCounts[curBucket]--;
-            data[index] = data[elementCounts[curBucket]];
+            int temp2 = data[elementCounts[curBucket]];
             data[elementCounts[curBucket]] = temp;
-            index++;
-            curBucket = static_cast<int>((data[index] - minVal) * bucketCount / (maxVal - minVal));
-            if(data[index] == maxVal) curBucket = bucketCount-1;
+            temp = temp2;
             count++;
         }
     }
@@ -72,7 +69,7 @@ long long Sort::Flash::CountComparisons(int* data, int n) {
     if (++res && n <= 1) return res; 
 
     int bucketCount = floor(n * 0.45);
-    if(bucketCount < 1) bucketCount = 1;
+    if(++res && bucketCount < 2) bucketCount = 2;
     std::vector<int> elementCounts(bucketCount, 0);
 
     int minVal = data[0],  maxVal = data[0];
@@ -87,7 +84,7 @@ long long Sort::Flash::CountComparisons(int* data, int n) {
 
     for(int i = 0; ++res && i < n; i++)
     {
-        int curBucket = static_cast<int>((data[i] - minVal) * bucketCount / (maxVal - minVal));
+        int curBucket = (bucketCount - 1ll) * (data[i] - minVal) / (maxVal - minVal);
         elementCounts[curBucket]++;
     }
     for(int i = 1; ++res && i < bucketCount; i++)
@@ -99,28 +96,28 @@ long long Sort::Flash::CountComparisons(int* data, int n) {
     int count = 0, index = 0;
     while(++res && count < n)
     {
-        int curBucket = static_cast<int>((data[index] - minVal) * bucketCount / (maxVal - minVal));
+        int curBucket = (bucketCount - 1ll) * (data[index] - minVal) / (maxVal - minVal);
         while(++res && index >= elementCounts[curBucket])
         {
             index++;
-            curBucket = static_cast<int>((data[index] - minVal) * bucketCount / (maxVal - minVal));
+            curBucket = (bucketCount - 1ll) * (data[index] - minVal) / (maxVal - minVal);
         }
         //swap
+        int temp = data[index];
         while(++res && index < elementCounts[curBucket])
         {
-            int temp = data[index];
+            curBucket = (bucketCount - 1ll) * (temp - minVal) / (maxVal - minVal);
             elementCounts[curBucket]--;
-            data[index] = data[elementCounts[curBucket]];
+            int temp2 = data[elementCounts[curBucket]];
             data[elementCounts[curBucket]] = temp;
-            index++;
-            curBucket = static_cast<int>((data[index] - minVal) * bucketCount / (maxVal - minVal));
+            temp = temp2;
             count++;
         }
     }
 
     for(int i = 1; ++res && i < n; i++){
 		int key = data[i], j = i - 1;
-		while(++++res && j >= 0 && data[j] > key){
+		while(++res && j >= 0 && ++res && data[j] > key){
 			data[j + 1] = data[j];
 			j--;
 		}
