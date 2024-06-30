@@ -4,8 +4,14 @@
 
 namespace ch = std::chrono;
 
-static std::mt19937 rng(ch::high_resolution_clock::now()
-								.time_since_epoch().count());
+#ifndef FORCE_SEED
+static const auto SEED = ch::high_resolution_clock::now()
+								.time_since_epoch().count();
+#else
+static const auto SEED = 24341337;
+#endif
+
+static std::mt19937 rng(SEED);
 
 void RNG::FillSorted(int *values, int n) {
 	for (int i = 0; i < n; i++)
