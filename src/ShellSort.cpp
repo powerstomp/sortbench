@@ -27,7 +27,7 @@ long long Sort::Shell::CountComparisons(int *data, int n)
         {
         
             for (int j = i;
-			     ++++count && j >= gap && data[j - gap] > data[j];
+			     ++count && j >= gap && ++count && data[j - gap] > data[j];
 			     j -= gap)
                  	std::swap(data[j], data[j - gap]);
         }
