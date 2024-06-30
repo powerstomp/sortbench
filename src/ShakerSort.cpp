@@ -9,10 +9,8 @@ void Sort::Shaker::Apply(int* a, int n)
         {
             if (a[i] > a[i + 1])
             {
-                int temp = a[i+1];
-                a[i+1] = a[i];
-                a[i] = temp;
-            k = i;
+                std::swap(a[i+1], a[i]);
+                k = i;
             }
         }
         tail = k;
@@ -20,9 +18,10 @@ void Sort::Shaker::Apply(int* a, int n)
         {
             if (a[i] < a[i - 1])
             {
-                int temp = a[i - 1];
-                a[i - 1] = a[i];
-                a[i] = temp;
+                //int temp = a[i - 1];
+                //a[i - 1] = a[i];
+                //a[i] = temp;
+                std::swap(a[i-1], a[i]);
                 k = i;
             }
         }
@@ -40,9 +39,7 @@ long long Sort::Shaker::CountComparisons(int* a, int n)
         {
             if (++res && a[i] > a[i + 1])
             {
-                int temp = a[i+1];
-                a[i+1] = a[i];
-                a[i] = temp;
+                std::swap(a[i+1], a[i]);
                 k = i;
             }
         }
@@ -51,9 +48,10 @@ long long Sort::Shaker::CountComparisons(int* a, int n)
         {
             if (++res && a[i] < a[i - 1])
             {
-                int temp = a[i - 1];
-                a[i - 1] = a[i];
-                a[i] = temp;
+                //int temp = a[i - 1];
+                //a[i - 1] = a[i];
+                //a[i] = temp;
+                std::swap(a[i-1], a[i]);
                 k = i;
             }
         }
