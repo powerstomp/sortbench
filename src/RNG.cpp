@@ -1,12 +1,13 @@
 #include "RNG.h"
-#include <random>
+
 #include <chrono>
+#include <random>
 
 namespace ch = std::chrono;
 
 #ifndef FORCE_SEED
-static const auto SEED = ch::high_resolution_clock::now()
-								.time_since_epoch().count();
+static const auto SEED =
+    ch::high_resolution_clock::now().time_since_epoch().count();
 #else
 static const auto SEED = 24341337;
 #endif

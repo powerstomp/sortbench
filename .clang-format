@@ -1,0 +1,13 @@
+Language:		Cpp
+BasedOnStyle:	Google
+IndentWidth:	4
+TabWidth:		4
+ColumnLimit:	80
+UseTab:			ForIndentation
+NamespaceIndentation:	All
+FixNamespaceComments:	false
+RemoveBracesLLVM:		true
+AccessModifierOffset:	-4
+AllowShortLoopsOnASingleLine:			false
+AllowShortIfStatementsOnASingleLine:	false
+AllowShortEnumsOnASingleLine:			false
