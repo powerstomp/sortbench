@@ -8,8 +8,8 @@ long long cmpCNTheapify(int* a, int start, int heapsize) {
 	if (++count && start * 2 + 1 >= heapsize)
 		return count;
 
-	int largerChildIdx = ((++count && a[start * 2 + 1] > a[start * 2 + 2]) ||
-	                      (++count && start * 2 + 2 >= heapsize))
+	int largerChildIdx = ((++count && start * 2 + 2 >= heapsize) ||
+	                      (++count && a[start * 2 + 1] > a[start * 2 + 2]))
 	                         ? start * 2 + 1
 	                         : start * 2 + 2;
 
