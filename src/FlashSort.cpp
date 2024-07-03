@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <utility>
-#include <vector>
 
 #define GetBucket(x) ((bucketCount - 1ll) * ((x) - minVal) / (maxVal - minVal))
 
@@ -13,7 +12,7 @@ void Sort::Flash::Apply(int* data, int n) {
 	int bucketCount = floor(n * 0.45);
 	if (bucketCount < 2)
 		bucketCount = 2;
-	std::vector<int> elementCounts(bucketCount, 0);
+	int elementCounts[bucketCount] = {0};
 
 	int minVal = data[0], maxVal = data[0];
 	for (int i = 1; i < n; i++) {
@@ -67,7 +66,7 @@ long long Sort::Flash::CountComparisons(int* data, int n) {
 	int bucketCount = floor(n * 0.45);
 	if (++res && bucketCount < 2)
 		bucketCount = 2;
-	std::vector<int> elementCounts(bucketCount, 0);
+	int elementCounts[bucketCount] = {0};
 
 	int minVal = data[0], maxVal = data[0];
 	for (int i = 1; ++res && i < n; i++) {
