@@ -1,5 +1,4 @@
 #include <utility>
-#include <vector>
 #include <cmath>
 
 namespace Sort::Flash{
