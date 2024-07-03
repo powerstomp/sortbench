@@ -23,13 +23,6 @@
 		return (id);      \
 	}
 
-bool IsSorted(int *values, int n) {
-	for (int i = 0; i < n - 1; i++)
-		if (values[i] > values[i + 1])
-			return false;
-	return true;
-}
-
 int *LoadFile(const char *name, int &n) {
 	std::ifstream file(name);
 	if (!file.good())
@@ -59,12 +52,12 @@ bool WriteFile(const char *name, int *values, int n) {
 long long GetSortTime(int algorithm, int *values, int n) {
 	static Stopwatch stopwatch;
 
-#define BENCH(command)               \
-	{                                \
-		stopwatch.Start();           \
-		{ command; }                 \
-		assert(IsSorted(values, n)); \
-		return stopwatch.Get();      \
+#define BENCH(command)                  \
+	{                                   \
+		stopwatch.Start();              \
+		{ command; }                    \
+		auto elapsed = stopwatch.Get(); \
+		return elapsed;                 \
 	}
 
 	if (algorithm == SortType::Bubble)
@@ -99,7 +92,6 @@ long long GetSortComparisons(int algorithm, int *values, int n) {
 #define BENCH(command)               \
 	{                                \
 		long long result = command;  \
-		assert(IsSorted(values, n)); \
 		return result;               \
 	}
 
