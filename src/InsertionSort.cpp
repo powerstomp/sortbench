@@ -22,7 +22,3 @@ long long Sort::Insertion::CountComparisons(int* a, int n) {
 	}
 	return comp;
 }
-/*
-Source:
-    ms Thao's slides
-*/
