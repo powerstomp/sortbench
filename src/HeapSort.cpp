@@ -24,7 +24,7 @@ void heapify(int* a, int start, int heapsize) {
 		return;
 
 	int largerChildIdx =
-	    ((a[start * 2 + 1] > a[start * 2 + 2]) || start * 2 + 2 >= heapsize)
+	    (start * 2 + 2 >= heapsize || (a[start * 2 + 1] > a[start * 2 + 2]))
 	        ? start * 2 + 1
 	        : start * 2 + 2;
 
